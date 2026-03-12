@@ -305,12 +305,12 @@
     };
 
     const projectCard = (item = {}) => {
-      const node = createCard("Project", `<div class="grid triple"><label><span>Title</span><input class="project-title" type="text" /></label><label><span>Stars</span><input class="project-stars" type="number" min="0" max="5" step="1" /></label><label><span>Icon</span><input class="project-emoji" type="text" /></label></div><div class="grid" style="margin-top:12px"><label><span>Button Label</span><input class="project-cta" type="text" /></label><label><span>Project URL</span><input class="project-href" type="url" /></label></div><label style="margin-top:12px"><span>Description</span><textarea class="project-description"></textarea></label>`);
+      const node = createCard("Project", `<div class="grid triple"><label><span>Title</span><input class="project-title" type="text" /></label><label><span>Stars</span><input class="project-stars" type="number" min="0" max="5" step="1" /></label><label><span>Icon</span><input class="project-emoji" type="text" /></label></div><div class="grid" style="margin-top:12px"><label><span>Demo URL</span><input class="project-demo-url" type="url" /></label><label><span>Repo URL</span><input class="project-repo-url" type="url" /></label></div><label style="margin-top:12px"><span>Description</span><textarea class="project-description"></textarea></label>`);
       node.querySelector(".project-title").value = item.title || "";
       node.querySelector(".project-stars").value = item.stars ?? "";
       node.querySelector(".project-emoji").value = item.emoji || "";
-      node.querySelector(".project-cta").value = item.cta || "";
-      node.querySelector(".project-href").value = item.href && item.href !== "#" ? item.href : "";
+      node.querySelector(".project-demo-url").value = item.demoUrl || (item.href && item.href !== "#" ? item.href : "");
+      node.querySelector(".project-repo-url").value = item.repoUrl && item.repoUrl !== "#" ? item.repoUrl : "";
       node.querySelector(".project-description").value = item.description || "";
       return node;
     };
@@ -447,10 +447,10 @@
               description: card.querySelector(".project-description").value.trim(),
               stars: Number(card.querySelector(".project-stars").value || 0),
               emoji: card.querySelector(".project-emoji").value.trim(),
-              cta: card.querySelector(".project-cta").value.trim(),
-              href: card.querySelector(".project-href").value.trim() || "#",
+              demoUrl: card.querySelector(".project-demo-url").value.trim() || "#",
+              repoUrl: card.querySelector(".project-repo-url").value.trim() || "#",
             }))
-            .filter((item) => item.title || item.description || item.emoji || item.href !== "#"),
+            .filter((item) => item.title || item.description || item.emoji || item.demoUrl !== "#" || item.repoUrl !== "#"),
         },
         certifications: {
           subtitle: subtitles.certifications,

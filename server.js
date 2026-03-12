@@ -294,10 +294,10 @@ function normalizeProjectItems(items) {
       description: clampText(item?.description, "", 420),
       stars: Math.max(0, Math.min(5, Number(item?.stars) || 0)),
       emoji: clampText(item?.emoji, "", 16),
-      cta: clampText(item?.cta, "View", 40),
-      href: normalizeUrl(item?.href, "#"),
+      demoUrl: normalizeUrl(item?.demoUrl ?? item?.href, "#"),
+      repoUrl: normalizeUrl(item?.repoUrl, "#"),
     }))
-    .filter((item) => item.title || item.description || item.emoji || item.href !== "#");
+    .filter((item) => item.title || item.description || item.emoji || item.demoUrl !== "#" || item.repoUrl !== "#");
 }
 
 function normalizeCertItems(items) {
