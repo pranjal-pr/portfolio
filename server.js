@@ -181,9 +181,9 @@ const DEFAULT_CONTENT = {
     ],
   },
   contact: {
-    email: "pranjal@example.com",
-    github: "https://github.com/your-username",
-    linkedin: "https://linkedin.com/in/your-username",
+    email: "pranjalpradhan80@gmail.com",
+    github: "https://github.com/pranjal-pr",
+    linkedin: "https://www.linkedin.com/in/pranjal-pradhan-5236892a4/",
   },
 };
 
