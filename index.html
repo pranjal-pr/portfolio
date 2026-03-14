@@ -94,40 +94,6 @@
         background: var(--card);
         color: var(--text);
       }
-      .hero-blob {
-        width: min(430px, 86vw);
-        aspect-ratio: 1 / 1;
-        border-radius: 58% 42% 53% 47% / 44% 57% 43% 56%;
-        background: linear-gradient(138deg, #7867ff 10%, #5e4ef6 55%, #6b83ff 100%);
-        box-shadow: 0 28px 64px rgba(109, 94, 252, 0.34);
-        padding: 18px;
-        animation: blobFloat 8s ease-in-out infinite;
-      }
-      .avatar-shell {
-        height: 100%;
-        width: 100%;
-        border-radius: inherit;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.38);
-        background: linear-gradient(170deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.14));
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-      }
-      .avatar-placeholder {
-        height: calc(100% - 36px);
-        width: calc(100% - 36px);
-        border-radius: 50%;
-        background: linear-gradient(165deg, #f7f7ff, #e8e9fb);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: clamp(48px, 9vw, 78px);
-        font-weight: 800;
-        color: #343a52;
-        letter-spacing: 0.04em;
-      }
       .social-link {
         color: var(--accent);
         border: 1px solid transparent;
@@ -924,19 +890,7 @@
           transform: translate(-50%, 8px);
         }
       }
-      @keyframes blobFloat {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-          border-radius: 58% 42% 53% 47% / 44% 57% 43% 56%;
-        }
-        50% {
-          transform: translateY(-8px) rotate(-2deg);
-          border-radius: 52% 48% 45% 55% / 58% 42% 58% 42%;
-        }
-      }
       @media (prefers-reduced-motion: reduce) {
-        .hero-blob,
         .scroll-mouse::after,
         .reveal {
           animation: none;
@@ -1015,7 +969,7 @@
     </header>
     <main class="mx-auto w-[min(1200px,94%)]">
       <section id="home" class="anchor-section pt-32 pb-20 sm:pt-36 lg:pt-40">
-        <div class="grid items-center gap-10 lg:grid-cols-[72px_1fr_1fr]">
+        <div class="grid items-center gap-10 lg:grid-cols-[72px_minmax(0,1fr)]">
           <aside class="hidden lg:flex lg:flex-col lg:items-center lg:gap-4 lg:self-center">
             <!-- Replace links below with your real profiles -->
             <a href="https://linkedin.com/in/your-username" class="social-link rounded-xl p-2" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
@@ -1056,15 +1010,6 @@
             <div class="mt-12 hidden items-center gap-3 text-xl sm:flex" style="color: var(--muted)">
               <span class="scroll-mouse"></span>
               <span>scroll down</span>
-            </div>
-          </div>
-          <div class="reveal flex justify-center">
-            <div class="hero-blob">
-              <div class="avatar-shell">
-                <!-- Replace this placeholder with your real profile image if desired -->
-                <!-- Example: <img src="your-photo.jpg" alt="Pranjal Roy Pradhan" class="h-full w-full object-cover" /> -->
-                <div class="avatar-placeholder" aria-hidden="true"></div>
-              </div>
             </div>
           </div>
         </div>
