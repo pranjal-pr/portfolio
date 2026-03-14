@@ -1378,7 +1378,17 @@
           <p id="contact-subtitle" class="mt-4 max-w-3xl text-xl" style="color: var(--muted)">Send a message and I will get back to you soon.</p>
         </div>
         <div class="contact-card reveal">
-          <form id="contact-form" class="contact-form-grid" novalidate>
+          <form
+            id="contact-form"
+            class="contact-form-grid"
+            action="https://formsubmit.co/pranjalpradhan80@gmail.com"
+            method="POST"
+            accept-charset="UTF-8"
+          >
+            <input type="hidden" name="_subject" value="Portfolio Contact - Pranjal Roy Pradhan" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" id="contact-next" name="_next" value="" />
+            <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
             <div class="contact-field">
               <label for="name" class="contact-label">Name</label>
               <input id="name" name="name" type="text" required class="contact-input" placeholder="Your name" />
@@ -1458,9 +1468,7 @@
       const contactForm = document.getElementById("contact-form");
       const statusText = document.getElementById("form-status");
       const submitButton = contactForm.querySelector('button[type="submit"]');
-      const nameInput = document.getElementById("name");
-      const emailInput = document.getElementById("email");
-      const messageInput = document.getElementById("message");
+      const contactNextInput = document.getElementById("contact-next");
 
       if (yearElement) yearElement.textContent = String(new Date().getFullYear());
 
@@ -1881,51 +1889,27 @@
 
       loadContent();
 
-      contactForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        if (!contactForm.checkValidity()) {
-          statusText.textContent = "Please complete all fields with valid details.";
-          statusText.style.color = "#d43d5b";
-          return;
-        }
+      if (contactNextInput) {
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set("contact", "sent");
+        nextUrl.hash = "contact";
+        contactNextInput.value = nextUrl.toString();
+      }
 
-        const payload = {
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          message: messageInput.value.trim(),
-        };
+      const pageUrl = new URL(window.location.href);
+      if (pageUrl.searchParams.get("contact") === "sent") {
+        statusText.textContent =
+          "Message submitted successfully. If this is your first FormSubmit submission, confirm the verification email they send you.";
+        statusText.style.color = "var(--accent)";
+        pageUrl.searchParams.delete("contact");
+        history.replaceState({}, document.title, `${pageUrl.pathname}${pageUrl.search}${pageUrl.hash || "#contact"}`);
+      }
 
-        statusText.textContent = "Sending message...";
-        statusText.style.color = "var(--muted)";
+      contactForm.addEventListener("submit", () => {
         submitButton.disabled = true;
         submitButton.classList.add("opacity-70", "cursor-not-allowed");
-
-        try {
-          const response = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          let data = {};
-          try {
-            data = await response.json();
-          } catch (parseError) {
-            data = {};
-          }
-
-          if (!response.ok) throw new Error(data.message || "Failed to send message.");
-
-          statusText.textContent = data.message || "Message sent successfully.";
-          statusText.style.color = data.mode === "smtp" ? "var(--accent)" : "#e8b14a";
-          contactForm.reset();
-        } catch (error) {
-          statusText.textContent = error.message || "Something went wrong. Please try again.";
-          statusText.style.color = "#d43d5b";
-        } finally {
-          submitButton.disabled = false;
-          submitButton.classList.remove("opacity-70", "cursor-not-allowed");
-        }
+        statusText.textContent = "Submitting...";
+        statusText.style.color = "var(--muted)";
       });
     </script>
   </body>
