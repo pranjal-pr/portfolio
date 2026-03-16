@@ -5,12 +5,15 @@ const nodemailer = require("nodemailer");
 const path = require("path");
 const fs = require("fs/promises");
 const crypto = require("crypto");
+const { spawn } = require("child_process");
 const { createDatabaseClient } = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT_DIR = __dirname;
 const CONTENT_PATH = path.join(ROOT_DIR, "content.json");
+const AGENT_PAGE_PATH = path.join(ROOT_DIR, "agent.html");
+const AGENT_RUNNER_PATH = path.join(ROOT_DIR, "agent_cli.py");
 const DATABASE_URL = String(process.env.DATABASE_URL || "").trim();
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "1234").trim();
 const ADMIN_SESSION_SECRET = String(
@@ -19,6 +22,8 @@ const ADMIN_SESSION_SECRET = String(
 const ADMIN_TOKEN_TTL_MS = 1000 * 60 * 60 * 12;
 const isProduction = String(process.env.NODE_ENV || "").trim() === "production";
 const SMTP_TIMEOUT_MS = Math.max(3000, Math.min(30000, Number(process.env.SMTP_TIMEOUT_MS) || 12000));
+const AGENT_TIMEOUT_MS = Math.max(3000, Math.min(120000, Number(process.env.AGENT_TIMEOUT_MS) || 45000));
+const MAX_AGENT_GOAL_LENGTH = 4000;
 
 const DEFAULT_CONTENT = {
   visibility: {
@@ -466,6 +471,93 @@ function getTransporter() {
   });
 }
 
+function getPythonRuntime() {
+  const configured = String(process.env.PYTHON_EXECUTABLE || "").trim();
+  if (configured) {
+    return { command: configured, args: [] };
+  }
+
+  if (process.platform === "win32") {
+    return { command: "py", args: ["-3"] };
+  }
+
+  return { command: "python3", args: [] };
+}
+
+function runAgentGoal(goal) {
+  return new Promise((resolve, reject) => {
+    const runtime = getPythonRuntime();
+    const child = spawn(runtime.command, [...runtime.args, AGENT_RUNNER_PATH, "--json"], {
+      cwd: ROOT_DIR,
+      env: process.env,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+    let timedOut = false;
+
+    const timer = setTimeout(() => {
+      timedOut = true;
+      child.kill("SIGTERM");
+    }, AGENT_TIMEOUT_MS);
+
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(new Error(`Failed to start Python runtime: ${error.message}`));
+    });
+
+    child.on("close", (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+
+      const rawOutput = stdout.trim();
+      let payload = null;
+
+      if (rawOutput) {
+        try {
+          payload = JSON.parse(rawOutput);
+        } catch (error) {
+          payload = null;
+        }
+      }
+
+      if (timedOut) {
+        return reject(new Error(`Agent execution timed out after ${AGENT_TIMEOUT_MS}ms.`));
+      }
+
+      if (code !== 0) {
+        const message =
+          payload?.error ||
+          stderr.trim() ||
+          `Agent process exited with code ${code}.`;
+        return reject(new Error(message));
+      }
+
+      if (!payload || payload.ok !== true) {
+        return reject(new Error("Agent returned an invalid response payload."));
+      }
+
+      return resolve(payload);
+    });
+
+    child.stdin.write(goal);
+    child.stdin.end();
+  });
+}
+
 async function deliverMessage({ name, email, message }) {
   const transporter = getTransporter();
   const toEmail = process.env.CONTACT_TO_EMAIL;
@@ -622,8 +714,41 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
+app.post("/api/agent/run", async (req, res) => {
+  try {
+    const goal = String(req.body.goal || "").trim();
+
+    if (!goal) {
+      return res.status(400).json({
+        ok: false,
+        message: "Goal is required.",
+      });
+    }
+
+    if (goal.length > MAX_AGENT_GOAL_LENGTH) {
+      return res.status(400).json({
+        ok: false,
+        message: `Goal exceeds the ${MAX_AGENT_GOAL_LENGTH} character limit.`,
+      });
+    }
+
+    const result = await runAgentGoal(goal);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Agent API error:", error);
+    return res.status(500).json({
+      ok: false,
+      message: error.message || "Agent execution failed.",
+    });
+  }
+});
+
 app.get("/admin", (req, res) => {
   return res.sendFile(path.join(ROOT_DIR, "admin.html"));
+});
+
+app.get("/agent", (req, res) => {
+  return res.sendFile(AGENT_PAGE_PATH);
 });
 
 app.get("*", (req, res, next) => {
@@ -632,6 +757,9 @@ app.get("*", (req, res, next) => {
   }
   if (req.path === "/admin.html") {
     return res.sendFile(path.join(ROOT_DIR, "admin.html"));
+  }
+  if (req.path === "/agent.html") {
+    return res.sendFile(AGENT_PAGE_PATH);
   }
   return res.sendFile(path.join(ROOT_DIR, "index.html"));
 });

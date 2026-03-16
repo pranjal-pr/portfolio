@@ -70,6 +70,11 @@ async function main() {
       throw new Error("Public content endpoint did not return hero content");
     }
 
+    const agentPage = await request("/agent");
+    if (!agentPage.response.ok || !agentPage.text.includes("Pranjal AI Agent Lab")) {
+      throw new Error("Agent page did not render expected content");
+    }
+
     const badLogin = await request("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -122,6 +127,17 @@ async function main() {
     });
     if (!contact.response.ok || !contact.json?.ok) {
       throw new Error("Contact endpoint failed in smoke test");
+    }
+
+    const agentRun = await request("/api/agent/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        goal: "What is 123 * 456?",
+      }),
+    });
+    if (!agentRun.response.ok || agentRun.json?.answer !== "123 * 456 = 56088.") {
+      throw new Error("Agent run endpoint failed in smoke test");
     }
 
     console.log("Smoke test passed.");

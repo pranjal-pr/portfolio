@@ -1,3 +1,14 @@
+---
+title: Pranjal AI Agent Lab
+emoji: "🤖"
+colorFrom: orange
+colorTo: blue
+sdk: docker
+app_port: 7860
+fullWidth: true
+short_description: Portfolio site with a browser-based modular ReAct AI agent demo.
+---
+
 # Pranjal Portfolio
 
 Express portfolio app with:
@@ -34,7 +45,49 @@ App URLs:
 
 - `http://localhost:3000`
 - `http://localhost:3000/admin`
+- `http://localhost:3000/agent`
 - `http://localhost:3000/api/health`
+
+The `/agent` page runs the Python ReAct scaffold in this repo.
+Install the Python dependency before using that route:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Optional environment variables for the agent page:
+
+- `PYTHON_EXECUTABLE`
+- `AGENT_TIMEOUT_MS`
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL`
+
+## Hugging Face Spaces
+
+This repo is prepared for a Docker Space deployment.
+
+Hugging Face requires Docker Spaces to declare `sdk: docker` in the YAML block
+at the top of the root `README.md`, and the app must listen on the configured
+`app_port`. This repo now uses `app_port: 7860` and the Docker image sets
+`PORT=7860`.
+
+The Space runs in file-persistence mode by default unless you also provide
+`DATABASE_URL`. Hugging Face Spaces use ephemeral local storage, so content
+changes made without an external database will not persist across rebuilds.
+
+Deployment flow:
+
+1. Create a new Space on Hugging Face and choose `Docker` as the SDK.
+2. Push this repository to the Space repo.
+3. In the Space settings, add secrets or variables as needed:
+   - `OPENAI_API_KEY` if you want the agent to use OpenAI instead of demo mode
+   - `OPENAI_MODEL` if you want a non-default OpenAI model
+   - `ADMIN_PASSWORD`
+   - `ADMIN_SESSION_SECRET`
+   - any optional contact/SMTP variables you already use
+
+The Docker image installs both Node.js dependencies and the Python runtime
+needed for the agent endpoint.
 
 ## Render + Neon
 
