@@ -34,3 +34,33 @@ jobs:
 
       - name: Run CI checks
         run: npm run ci
+
+  deploy_hf_space:
+    name: Deploy Hugging Face Space
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN secret is not configured." >&2
+            exit 1
+          fi
+
+          git push --force https://praanjalpradhan:$HF_TOKEN@huggingface.co/spaces/praanjalpradhan/aiagentic HEAD:main

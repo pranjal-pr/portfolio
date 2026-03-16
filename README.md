@@ -110,10 +110,21 @@ Pipeline behavior:
 
 - every push and PR runs `npm ci` and `npm run ci`
 - `npm run ci` performs syntax checks and an end-to-end smoke test
+- every push to `main` auto-deploys to the Hugging Face Space `praanjalpradhan/aiagentic` after CI passes
 - Render is configured with `autoDeployTrigger: checksPass` in `render.yaml`
 - when the `main` branch checks pass, Render deploys automatically
 
 This is cleaner than using a deploy hook because GitHub owns the checks and Render only deploys verified commits.
+
+To enable Hugging Face auto-deploy from GitHub Actions, add this repository secret:
+
+- `HF_TOKEN`
+
+Recommended:
+
+- revoke the Hugging Face token that was pasted into chat earlier
+- create a fresh write token in Hugging Face
+- store that new token as the GitHub Actions secret `HF_TOKEN`
 
 The app auto-creates these tables on first boot:
 
