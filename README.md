@@ -1,12 +1,12 @@
 ---
 title: Pranjal AI Agent Lab
 emoji: "🤖"
-colorFrom: orange
+colorFrom: red
 colorTo: blue
 sdk: docker
 app_port: 7860
 fullWidth: true
-short_description: Portfolio site with a browser-based modular ReAct AI agent demo.
+short_description: Portfolio site with a modular ReAct AI agent demo.
 ---
 
 # Pranjal Portfolio
