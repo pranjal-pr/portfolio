@@ -128,49 +128,31 @@ const DEFAULT_CONTENT = {
     subtitle: "My independent projects & contributions",
     items: [
       {
-        title: "Movie Recommender System",
+        title: "ChatZen",
         description:
-          "Content-based recommendation engine hosted on Hugging Face for personalized movie suggestions.",
-        stars: 2,
-        emoji: "🎬",
-        cta: "Live Demo",
-        href: "#",
-      },
-      {
-        title: "Multi-Model AI Chatbot",
-        description:
-          "An interactive chatbot interface built with Streamlit and support for multiple model backends.",
-        stars: 3,
-        emoji: "🤖",
-        cta: "In Dev",
-        href: "#",
-      },
-      {
-        title: "AstraRAG Chatbot",
-        description:
-          "Agentic Retrieval-Augmented Generation chatbot focused on contextual understanding and accurate responses.",
-        stars: 4,
-        emoji: "🛰️",
-        cta: "In Dev",
-        href: "#",
-      },
-      {
-        title: "Hospital Management System",
-        description:
-          "Robust backend platform for managing patient records, scheduling, billing, and hospital workflows.",
-        stars: 3,
-        emoji: "🏥",
-        cta: "Case Study",
-        href: "#",
-      },
-      {
-        title: "Credit Card Fraud Detection",
-        description:
-          "Machine learning model to detect fraudulent transactions with data preprocessing and anomaly scoring.",
+          "Conversational AI demo deployed on Hugging Face Spaces, focused on responsive chat interactions and practical assistant workflows.",
         stars: 5,
-        emoji: "💳",
-        cta: "In Dev",
-        href: "#",
+        emoji: "CHAT",
+        demoUrl: "https://huggingface.co/spaces/praanjalpradhan/chatbot",
+        repoUrl: "https://github.com/pranjal-pr/chatbot",
+      },
+      {
+        title: "StudyGPT",
+        description:
+          "AI study assistant hosted on Hugging Face Spaces for learning support, doubt resolution, and more structured study sessions.",
+        stars: 5,
+        emoji: "STUDY",
+        demoUrl: "https://huggingface.co/spaces/praanjalpradhan/StudyGPT",
+        repoUrl: "https://github.com/pranjal-pr/Study-GPT",
+      },
+      {
+        title: "Groq Stock Analysis",
+        description:
+          "Stock analysis experience built around Groq-powered workflows and deployed as a Hugging Face Space for fast interactive exploration.",
+        stars: 5,
+        emoji: "GROQ",
+        demoUrl: "https://huggingface.co/spaces/praanjalpradhan/agent-x-stock-syndicate",
+        repoUrl: "https://github.com/pranjal-pr/Stock-analysis",
       },
     ],
   },
