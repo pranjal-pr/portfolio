@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 const ROOT_DIR = __dirname;
 const CONTENT_PATH = path.join(ROOT_DIR, "content.json");
 const AGENT_PAGE_PATH = path.join(ROOT_DIR, "agent.html");
+const RESUME_FILE_PATH = path.join(ROOT_DIR, "Pranjal_Pradhan_Resume.pdf");
 const AGENT_RUNNER_PATH = path.join(ROOT_DIR, "agent_cli.py");
 const DATABASE_URL = String(process.env.DATABASE_URL || "").trim();
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "1234").trim();
@@ -749,6 +750,10 @@ app.get("/admin", (req, res) => {
 
 app.get("/agent", (req, res) => {
   return res.sendFile(AGENT_PAGE_PATH);
+});
+
+app.get("/Pranjal_Pradhan_Resume.pdf", (req, res) => {
+  return res.sendFile(RESUME_FILE_PATH);
 });
 
 app.get("*", (req, res, next) => {
