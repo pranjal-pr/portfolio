@@ -14,6 +14,7 @@ const ROOT_DIR = __dirname;
 const CONTENT_PATH = path.join(ROOT_DIR, "content.json");
 const AGENT_PAGE_PATH = path.join(ROOT_DIR, "agent.html");
 const RESUME_FILE_PATH = path.join(ROOT_DIR, "Pranjal_Pradhan_Resume.pdf");
+const ABOUT_PHOTO_PATH = path.join(ROOT_DIR, "Pranjal_About_Photo.jpeg");
 const AGENT_RUNNER_PATH = path.join(ROOT_DIR, "agent_cli.py");
 const DATABASE_URL = String(process.env.DATABASE_URL || "").trim();
 const ADMIN_PASSWORD = String(process.env.ADMIN_PASSWORD || "1234").trim();
@@ -732,6 +733,10 @@ app.get("/agent", (req, res) => {
 
 app.get("/Pranjal_Pradhan_Resume.pdf", (req, res) => {
   return res.sendFile(RESUME_FILE_PATH);
+});
+
+app.get("/Pranjal_About_Photo.jpeg", (req, res) => {
+  return res.sendFile(ABOUT_PHOTO_PATH);
 });
 
 app.get("*", (req, res, next) => {
