@@ -22,20 +22,7 @@
   },
   "about": {
     "intro": "As a B.Tech CSE student specializing in AI, Machine Learning, and DevOps, I focus on designing practical intelligent systems and deploying them with reliability. I enjoy translating ideas into real products through clean architecture, robust engineering, and performance-driven implementation.",
-    "stats": [
-      {
-        "value": "04+",
-        "label": "Years XP"
-      },
-      {
-        "value": "23+",
-        "label": "Projects"
-      },
-      {
-        "value": "03+",
-        "label": "Domains"
-      }
-    ]
+    "stats": []
   },
   "skills": {
     "subtitle": "My toolkit for building machine learning models and shipping them into real products.",
